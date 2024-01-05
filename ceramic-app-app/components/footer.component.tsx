@@ -1,18 +1,20 @@
 import Link from "next/link";
 
 export const Footer = () => {
+
+
+  
   return (
     <footer className='footer'>
       <div>
-        <Link
-          href='/'
+        <a
           onClick={() => {
-            localStorage.removeItem("logged_in");
-            window.location.href = "/";
+            localStorage.clear();
+            history.pushState(null, null, window.location.href);
           }}
         >
           Logout
-        </Link>
+        </a>
       </div>
     </footer>
   );

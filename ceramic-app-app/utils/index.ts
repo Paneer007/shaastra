@@ -85,6 +85,7 @@ const authenticateEthPKH = async (ceramic: CeramicApi, compose: ComposeClient) =
       throw new Error("No injected Ethereum provider found.");
     }
 
+
     // We enable the ethereum provider to get the user's addresses.
     const ethProvider = window.ethereum;
     // request ethereum accounts.
@@ -92,16 +93,19 @@ const authenticateEthPKH = async (ceramic: CeramicApi, compose: ComposeClient) =
       method: "eth_requestAccounts",
     });
     const accountId = await getAccountId(ethProvider, addresses[0]);
+
     const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId);
+    let resources = await Promise.all(compose.resources.map(async (resource) => {
+      const streamId = StreamID.fromString(resource.slice(18));
+      const stream = await ceramic.loadStream(streamId);
+      return stream.content.name;
+    }));
 
-    /**
-     * Create DIDSession & provide capabilities for resources that we want to access.
-     * @NOTE: The specific resources (ComposeDB data models) are provided through
-     * "compose.resources" below.
-     */
 
-    session = await DIDSession.authorize(authMethod, { resources: compose.resources });
-    // Set the session in localStorage.
+  //  session = await DIDSession.authorize(authMethod, { resources: resources });
+  session = await DIDSession.authorize(authMethod, { resources: compose.resources });
+
+   // Set the session in localStorage.
     localStorage.setItem("ceramic:eth_did", session.serialize());
   }
 
