@@ -1,0 +1,4 @@
+
+#!/usr/bin/env sh
+
+node /home/sanjai/tutorials/new_wheel/ceramic-app/node_modules/.bin/ceramic "$@"
